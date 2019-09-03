@@ -78,4 +78,15 @@ select sum(totaulas) from cursos where ano = 2016;
 
 select avg(totaulas) from cursos where ano = 2016;
 
+SELECT 
+    carga, COUNT(nome)
+FROM
+    cursos
+GROUP BY carga
+having count(nome) > 3;
+
+select * from cursos where carga = 30;
+
+select ano, count(*) from cursos group by ano;
+
 

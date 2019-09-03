@@ -1,16 +1,7 @@
 /*
 Exercícios do curso de MySQL / Agosto de 2019.
-
-1)Uma lista com o nome de todas as gafanhotas.
-2)Uma lista com os dados de todos que nasceram entre 01/01/2000 e 31/12/2015.
-3)Uma lista com o nome de todos os homens que são programadores.
-4)Uma lista com os dados de todas as mulheres que nasceram no Brasil e o nme começa com "J".
-5)Uma lista com o nome e a nacionalidade de todos os homens que tem "Silva" no nome, não nasceram no Brasil e pesam menos de 100kg.
-6)Qual é a maior altura de homens que moram no Brasil?
-7)Qual é a média de peso dos gafanhotos cadastrados?
-8)Qual é o menor peso entre mulheres que nasceram fora do Brasil e entre 01/01/1990 e 31/12/2000?
-9)Quantas mulheres têm mais de 1,90m de altura?
 */
+
 use cadastro;
 
 # 1)Uma lista com o nome de todas as gafanhotas.
@@ -106,15 +97,49 @@ WHERE
     sexo = 'F' AND altura > 1.90;
     
 #===================================================================================================
-    
-    
-    
+#                                    Segunda Parte
+#===================================================================================================    
 
-    
+# 1) Uma lista com as profissões dos gafanhotos e seus respectivos quantitativos.
+SELECT 
+    profissao, COUNT(*)
+FROM
+    gafanhotos
+GROUP BY profissao;
 
-        
-        
-        
+#===================================================================================================    
+
+# 2) Quantos gafanhotos homens e quantas mulheres nasceram após 01/01/2005 ?
+select sexo, count(*) from gafanhotos where nascimento > '2005-01-01' group by sexo;
+
+#===================================================================================================    
+
+# 3) Uma lista com os gafanhotos que nasceram fora do Brasil, mostrando o país de
+# origem e o total de pessoas nascidas lá. Só nos interessam os países que tiveram
+# mais de 3 gafanhotos com essa nacionalidade.
+SELECT 
+    nacionalidade, COUNT(*)
+FROM
+    gafanhotos
+WHERE
+    nacionalidade != 'Brasil'
+GROUP BY nacionalidade
+HAVING COUNT(nacionalidade) > 3;
+
+#===================================================================================================    
+
+# 4)Uma lista agrupada pela altura dos gafanhotos, mostrando quantas pessoas pesam
+# mais de 100Kg e que estão acima da média de altura de todos os cadastrados.
+SELECT 
+    altura, COUNT(*)
+FROM
+    gafanhotos
+WHERE
+    peso > 100
+GROUP BY altura having altura > (select avg(altura) from gafanhotos);
+
+#===================================================================================================    
+
 
 
 
