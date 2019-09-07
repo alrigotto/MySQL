@@ -89,4 +89,134 @@ select * from cursos where carga = 30;
 
 select ano, count(*) from cursos group by ano;
 
+#==================== AULA 15 =========================
+use cadastro;
+
+describe gafanhotos;
+
+alter table gafanhotos add column cursopreferido int; # pode colocar aqui no final 'first' ou 'after'
+
+# adicionando chave estrangeira para fazer um relacionamento;
+alter table gafanhotos add foreign key (cursopreferido) references cursos(idcurso);
+
+select * from gafanhotos;
+select * from cursos;
+
+update gafanhotos set cursopreferido = '6' where id = '1';
+
+
+
+delete from cursos where idcurso = '6'; /* isso gera erro pq "idcurso = 6" é o curso preferido do
+Daniel Moraes na table gafanhotos, portanto estão relacionados e não pode ser apagado pois causa
+inconsistencia. */
+
+delete from cursos where idcurso = '28'; /* Aqui o 'idcurso = 28' foi apagado sem erro, pq não há 
+nenhum usuario em 'gafanhoto' que prefere esse curso, ou seja, que esteja relacioanado a ele.*/
+
+select nome, cursopreferido from gafanhotos;
+
+select nome, ano from cursos;
+
+SELECT 
+    gafanhotos.nome,
+    gafanhotos.cursopreferido,
+    cursos.nome,
+    cursos.ano
+FROM
+    gafanhotos
+        INNER JOIN
+    cursos; /*  Aqui foi feito um join entre as tables, mas a listagem foi mostrada de forma não
+    muito inteligente. OBS: o 'INNER' pode ser omitido*/
+    
+    SELECT 
+    gafanhotos.nome,
+    gafanhotos.cursopreferido,
+    cursos.nome,
+    cursos.ano
+FROM
+    gafanhotos
+        JOIN
+    cursos ON cursos.idcurso = gafanhotos.cursopreferido order by gafanhotos.nome; /* Com o uso de ON
+    é indicada as relações usando a chave primária de 'cursos' com a chave estrangeira de 'gafanhoto'*/
+    
+    
+SELECT 
+    g.nome, c.nome, c.ano
+FROM
+    gafanhotos AS g
+        INNER JOIN
+    cursos AS c ON c.idcurso = g.cursopreferido
+ORDER BY g.nome; /*Aqui foi usado o recurso de apelido usando 'AS' para assim poder escrever
+somente a primeira letra da tabela para facilitar. 'Inner join' == 'join' */
+
+
+SELECT 
+    g.nome, c.nome, c.ano
+FROM
+    gafanhotos AS g LEFT OUTER JOIN cursos AS c ON c.idcurso = g.cursopreferido; /* 'left outer join'
+é para dar preferencia na listagem para a table da esquerda que é 'ganhanhoto'.
+OBS: pode-se omitir o 'outer'*/
+
+SELECT 
+    g.nome, c.nome, c.ano
+FROM
+    gafanhotos AS g RIGHT OUTER JOIN cursos AS c ON c.idcurso = g.cursopreferido /* 'right outer
+join' é para dar preferencia na listagem para a table da direita que é 'cursos'.
+OBS: pode-se omitir o 'outer'*/
+
+
+# ==================== AULA 16 ===================================
+
+
+
+
+
+
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
