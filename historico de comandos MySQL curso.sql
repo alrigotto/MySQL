@@ -89,14 +89,19 @@ select * from cursos where carga = 30;
 
 select ano, count(*) from cursos group by ano;
 
-#==================== AULA 15 =========================
+#================================= AULA 15 ==================================
 use cadastro;
 
 describe gafanhotos;
 
 alter table gafanhotos add column cursopreferido int; # pode colocar aqui no final 'first' ou 'after'
 
-# adicionando chave estrangeira para fazer um relacionamento;
+/*
+Adicionando chave estrangeira para fazer um relacionamento baseado em:
+|============| N     |=========|     1 |===========|            
+| GAFANHOTOS |-------| PREFERE |-------|   CURSO   |
+|============|       |=========|       |===========|
+*/
 alter table gafanhotos add foreign key (cursopreferido) references cursos(idcurso);
 
 select * from gafanhotos;
@@ -160,63 +165,67 @@ OBS: pode-se omitir o 'outer'*/
 SELECT 
     g.nome, c.nome, c.ano
 FROM
-    gafanhotos AS g RIGHT OUTER JOIN cursos AS c ON c.idcurso = g.cursopreferido /* 'right outer
+    gafanhotos AS g RIGHT OUTER JOIN cursos AS c ON c.idcurso = g.cursopreferido; /* 'right outer
 join' é para dar preferencia na listagem para a table da direita que é 'cursos'.
 OBS: pode-se omitir o 'outer'*/
 
 
-# ==================== AULA 16 ===================================
+# ============================= AULA 16 ===================================
+
+/*
+Cardinalidade de "MUITOS" para "MUITOS":
+
+|============| N      |=========|      N |===========|            
+| GAFANHOTOS |--------| ASSISTI |--------|   CURSO   |
+|============|        |=========|        |===========|  
 
 
+A técnica utilizada neste caso é transformar "ASSISTI" em uma entidade,
+ficando 2 relacionamentos de 1 para muitos:
 
+|============| 1    ==    N |=========| N    ==   1 |===========|            
+| GAFANHOTOS |-----|  |-----| ASSISTI |-----|  |----|   CURSO   |
+|============|      ==      |=========|      ==     |===========|
 
+Assim, "assisti" será uma table que terá a chave estrangeira de "gafanhotos" e "cursos" que 
+consequentemente terão também a chave estrangeira de "assisti".
+*/
 
+# Criando a table "assisti" com seus campos e as chaves estrangeiras:
+use cadastro;
+CREATE TABLE assisti (
+    id INT NOT NULL AUTO_INCREMENT,
+    data DATE,
+    idgafanhoto INT,
+    idcurso INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (idgafanhoto)
+        REFERENCES gafanhotos (id),
+    FOREIGN KEY (idcurso)
+        REFERENCES cursos (idcurso)
+)  DEFAULT CHARSET=UTF8;
 
-    
-    
-    
+# Inserindo registros em "assisti";
+insert into assisti values (default, '2014-03-01', '1', '2');
+SELECT * FROM assisti;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Selecionado gafanhoto e assiti
+SELECT 
+    g.nome, a.idcurso
+FROM
+    gafanhotos g
+        JOIN
+    assisti a ON g.id = a.idgafanhoto
+ORDER BY g.nome;
+/* Nesta listagem não aparece o nome do curso, para isso precisa fazer mais um "JOIN" com
+a tabela "cursos": */
+SELECT 
+    g.nome, c.nome
+FROM
+    gafanhotos g
+        JOIN
+    assisti a ON g.id = a.idgafanhoto
+        JOIN
+    cursos c ON c.idcurso = a.idcurso
+ORDER BY g.nome;
 
